@@ -1,29 +1,35 @@
-import numpy as np
-import math
-import matplotlib.pyplot as plt
-from beam import *
-import scipy.linalg as la
+import pyhsi
 
 
-#def main():
- #   a = 23 // 2
-  #  print(a)
+def main():
+    # Define Crowd
+    numPedestrians = 100
+    length = 50
+    width = 1
+    sync = 0
+    # crowd = pyhsi.DeterministicCrowd(numPedestrians, length, width, sync)   # Define Crowd
+    crowd = pyhsi.RandomCrowd(numPedestrians, length, width, sync)   # Define Crowd
+    # crowd = pyhsi.SinglePedestrian()
 
-#if __name__ == "__main__":
- #   main()
+    # Define Beam
+    beam = pyhsi.Beam()
+
+    # Initialize Solver
+    FeMmSolver = pyhsi.FeMmSolver(crowd, beam)
+    FeMmResults = FeMmSolver.solve()
+    FeMmResults.printMaxMidspanRMS()
+    FeMmResults.plotMidspanAcceleration()
+    # FeMmResults.save()
+
+    # FeSmdSolver = pyhsi.FeSMDSolver(crowd, beam)
+    # FeSmdResults = FeSmdSolver.solve()
+    # FeSmdResults.save()
+
+    # results.printMaxRMS(poi=4)          # Process results
+    # results.plotAcceleration(poi=4)
+
+    pass
 
 
-class Employee:
-    def __init__(self, first, last, pay): #we also have email but the email can be created with the first name and the last name
-        self.first = first
-        self.last = last
-        self.pay = pay
-        self.email = first + '.' + last +'@company.com'
-
-
-emp_1 = Employee()
-emp_2 = Employee()
-
-print(emp_1)
-print(emp_2)
-
+if __name__ == '__main__':
+    main()

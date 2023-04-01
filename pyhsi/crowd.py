@@ -22,14 +22,14 @@ class Pedestrian:
     synchedPace = 0
     synchedPhase = 0
 
-    def __init__(self, mass, damp, stiff, pace, phase, location, velocity, iSync):
+    def __init__(self, mass, damping, stiff, pace, phase, location, velocity, iSync):
         """
         this function introduce the properties when creating one pedestrian
 
         Parameters
         ----------
         mass: human mass
-        damp : damping effect of pedesteian
+        damping : damping effect of pedesteian
         stiff : stiffness of humans
         pace : pacing frequency
         phase : phase angle
@@ -43,7 +43,7 @@ class Pedestrian:
 
         """
         self.mass = mass
-        self.damp = damp
+        self.damping = damping
         self.stiff = stiff
         self.pace = pace
         self.phase = phase
@@ -215,17 +215,36 @@ class Pedestrian:
 
 class Crowd:
 
-    populationProperties = {}
+    populationProperties = {
+        'meanMass': 73.85,
+        'sdMass': 15.68,
+        'meanPace': 1.96,
+        'sdPace': 0.209,
+        'meanStride': 0.66,
+        'sdStride': 0.066,
+        'meanStiffness': 28000,
+        'sdStiffness': 2800,
+        'meanDamping': 0.3,
+        'sdDamping': 0.03,
+    }
     """
     an empty dictionary is initialized to store population properties which will be introduced in the following 
     lines of code.  
     """
 
-    def __init__(self, numPedestrians, length, width, sync):
+    def __init__(
+        self,
+        numPedestrians=100,
+        length=50,
+        width=1,
+        sync=0
+    ):
         """
         initialization takes arguments numPedestrians, length, width and sync. Then set the corresponding attributes
         """
-        # self.density = density
+
+        Pedestrian.setPopulationProperties(self.populationProperties)
+
         self.numPedestrians = numPedestrians
         self.length = length
         self.width = width
