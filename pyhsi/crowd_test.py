@@ -58,7 +58,7 @@ def getPedestrianDistribution(crowds):
     for crowd in crowds:
         for ped in crowd.pedestrians:
             pAll['pMassAll'].append(ped.mass)
-            pAll['pDampAll'].append(ped.damp)
+            pAll['pDampAll'].append(ped.damping)
             pAll['pStiffAll'].append(ped.stiff)
             pAll['pPaceAll'].append(ped.pace)
             pAll['pPhaseAll'].append(ped.phase)

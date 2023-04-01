@@ -10,19 +10,30 @@ class Beam:
     Class definition
     """
     # Class attributes
-    _numElements = 10  # n - Number of beam elements !not for modal
-    length = 50  # L - Length (m)
-    width = 2  # b - Width (m)
-    height = 0.6  # h - Height (m)
-    E = 200e9  # E - Young's modulus (N/m^2)
-    modalDampingRatio = 0.005  # xi - Modal damping ratio of the beam
-    nHigh = 3  # nHigh - Higher mode for damping matrix
-    area = 0.3162  # A - Cross-section area (m^2)
-    linearMass = 500  # m - Linear mass (kg/m)
+    # _numElements = 10           # numElements - Number of beam elements !not for modal
+    # length = 50                 # length - Length (m)
+    # width = 2                   # width - Width (m)
+    # height = 0.6                # height - Height (m)
+    # E = 200e9                   # E - Young's modulus (N/m^2)
+    # modalDampingRatio = 0.005   # modalDampingRatio - Modal damping ratio of the beam
+    # nHigh = 3                   # nHigh - Higher mode for damping matrix
+    # area = 0.3162               # area - Cross-section area (m^2)
+    # linearMass = 500            # linearMass - Linear mass (kg/m)
 
     beamFreq = 2  # f - Beam frequency, given linear mass (Hz)
 
-    def __init__(self, numElements, length, width, height, E, modalDampingRatio, nHigh, area, linearMass):
+    def __init__(
+        self,
+        numElements=10,             # numElements - Number of beam elements !not for modal
+        length=50,                  # length - Length (m)
+        width=2,                    # width - Width (m)
+        height=0.6,                 # height - Height (m)
+        E=200e9,                    # E - Young's modulus (N/m^2)
+        modalDampingRatio=0.005,    # modalDampingRatio - Modal damping ratio of the beam
+        nHigh=3,                    # nHigh - Higher mode for damping matrix
+        area=0.3162,                # area - Cross-section area (m^2)
+        linearMass=500              # linearMass - Linear mass (kg/m)
+    ):
         """
         Constructs a beam object
 
@@ -71,45 +82,45 @@ class Beam:
 
     # region Properties
     @property
-    def elemLength(self):
+    def elemLength(self) -> float:
         if self._elemLength is None:
             self._elemLength = self.length / self.numElements
         return self._elemLength
 
     @property
-    def I(self):
+    def I(self) -> float:
         # I - Second Moment of Area (m^4)
         if self._I is None:
             self._I = (self.width * self.height ** 3) / 12
         return self._I
 
     @property
-    def EI(self):
+    def EI(self) -> float:
         # EI - Flexural Rigidity
         if self._EI is None:
             self._EI = self.linearMass * ((2 * math.pi * self.beamFreq) * (math.pi / self.length) ** (-2)) ** 2
         return self._EI
 
     @property
-    def nDOF(self):
+    def nDOF(self) -> int:
         if self._nDOF is None:
             self._nDOF = 2 * (self.numElements + 1)
         return self._nDOF
 
     @property
-    def nBDOF(self):
+    def nBDOF(self) -> int:
         if self._nBDOF is None:
             self._nBDOF = 2 * (self.numElements + 1)
         return self._nBDOF
 
     @property
-    def RDOF(self):
+    def RDOF(self) -> int:
         if self._RDOF is None:
             self._RDOF = [0, self.nDOF - 2]  # Should this be nDOF-1 so that the last column is used not 2nd last?
         return self._RDOF
 
     @property
-    def numElements(self):
+    def numElements(self) -> int:
         return self._numElements
 
     @numElements.setter

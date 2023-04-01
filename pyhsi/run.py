@@ -1,5 +1,6 @@
 import sys
 
+import pyhsi
 from crowd import *
 from solver import *
 from results import *
@@ -9,52 +10,11 @@ import csv
 from tkinter import *
 from tkinter import filedialog
 
+# import pyhsi
+
 
 def main():
-    # Run a simulation or load results
-    # # Get the simulation properties
-    # choices = ['Run a simulation', 'Load results']
-    # question = [inquirer.List('simSource', message="How would you like to start?", choices=choices)]
-    # answer = inquirer.prompt(question)
-    #
-    # if answer['simSource'] == "Create a new simulation":
-    #     self.createSimulation()
-    # elif answer['simSource'] == "Load simulation":
-    #     self.loadSimulation()
-
-    # Setup Simulation
-    sim = SimulationSetup()
-    # sim = SimulationSetup('../simulations/setups/crowd1.csv')  # Quick run
-    solvers = sim.loadSolvers()
-
-    # Run Simulations
-    results = {}
-    for i in solvers:
-        solvers[i].solve()
-        t, q, dq, ddq = solvers[i].getResults()
-        pedModel, modelType = solvers[i].getModelType()
-        results[i] = Results(t, q, dq, ddq, pedModel, modelType, sim.filename)
-        results[i].askSave()
-        results[i].options()
-
-    # Process Results
-    # results['FE_MM'].calcMaxRms()
-
-    # sim.run()
-
-
-def testRun():
-    Solver.setNumSteps(1)
-
-    # sim = SimulationSetup()
-    sim = SimulationSetup('../simulations/setups/test2.csv')
-    solvers = sim.loadSolvers()
-    solvers['FE_MM'].solve()
-    t, q, dq, ddq = solvers['FE_MM'].getResults()
-    pedModel, modelType = solvers['FE_MM'].getModelType()
-    results = Results(t, q, dq, ddq, pedModel, modelType, sim.filename)
-    results.askSave()
-    results.options()
+    pass
 
 
 class SimulationSetup:

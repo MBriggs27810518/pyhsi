@@ -15,11 +15,7 @@ from tkinter import filedialog
 
 
 def loadResults():
-
     results = Results.open()
-    # results = Results.open('../simulations/results/simple_fe_mm.xlsx')
-    # results = Results.open('../simulations/results/crowd1_fe_mm.xlsx')
-
     results.options()
 
 
@@ -47,6 +43,8 @@ class Results:
         self._midspanAcceleration = None
         self._midspanRMS = None
         self._maxMidspanRMS = None
+
+        # TODO: POI Acceleration
 
     # region Properties
     @property
@@ -144,23 +142,22 @@ class Results:
 
     def options(self):
         # Options for processing the results
-        choices = ['Finish viewing results',
-                   'Save results',
-                   'Print maxRMS at midspan',
-                   'Plot maxRMS at midspan',
-                   'Cancel']
-        question = [inquirer.List('next', message="How would you like to proceed?", choices=choices)]
+        optionsMessage = "How would you like to proceed?"
+        optionsChoices = [
+            'Print maxRMS at midspan',
+            'Plot maxRMS at midspan',
+            'Save results',
+            'Finish viewing results']
+        question = [inquirer.List('next', message=optionsMessage, choices=optionsChoices)]
         answer = inquirer.prompt(question)
 
         while answer['next'] != 'Finish viewing results':
-            if answer['next'] == 'Save results':
-                self.save()
-            elif answer['next'] == 'Print maxRMS at midspan':
+            if answer['next'] == 'Print maxRMS at midspan':
                 self.printMaxMidspanRMS()
             elif answer['next'] == 'Plot maxRMS at midspan':
                 self.plotMidspanAcceleration()
-            elif answer['next'] == 'Cancel':
-                sys.exit()
+            elif answer['next'] == 'Save results':
+                self.save()
             answer = inquirer.prompt(question)
 
     # region Process Results

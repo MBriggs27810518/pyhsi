@@ -18,6 +18,7 @@ from results import *
 import the beams from the beam
 '''
 
+
 class Solver:
     """
     The base class for Human-Structure Interaction.
@@ -78,7 +79,7 @@ class Solver:
             return self.nBDOF + self.crowd.numPedestrians
         return self.nBDOF
 
-    def genTimeVector(self) -> (np.ndarray, float):
+    def genTimeVector(self):
         """
         Returns the time vector by simulating the time frame for a given space and stride vector
 
@@ -100,7 +101,7 @@ class Solver:
                 maxTimeOff = timeOff
 
         timeEnd = 1.1*maxTimeOff    # Run simulation for a bit after the last ped has left
-        dT = timeEnd / self.numSteps
+        dT = timeEnd / (self.numSteps - 1)
         dT = min(dT, dTMax)
         t = np.arange(0, timeEnd, dT)  # Rounding error created by differing precision in Python vs MATLAB
 
@@ -128,12 +129,13 @@ class Solver:
         # K - System stiffness
 
         nElements = self.beam.numElements
+        nDOF = 2*(nElements+1)
 
         elementalMassMatrix, elementalStiffnessMatrix = self.beam.beamElement()
 
-        M = np.zeros((self.nDOF, self.nDOF))
-        C = np.zeros((self.nDOF, self.nDOF))
-        K = np.zeros((self.nDOF, self.nDOF))
+        M = np.zeros((nDOF, nDOF))
+        C = np.zeros((nDOF, nDOF))
+        K = np.zeros((nDOF, nDOF))
 
         # Assemble elements, noting beam is prismatic
         for i in range(nElements):
@@ -245,7 +247,7 @@ class Solver:
         modalDampingRatio : Any
             Modal damping ratio of beam
         nHigh : Any
-            Higher mdoe of damping matrix
+            Higher mode of damping matrix
 
         Returns
         -------
@@ -267,7 +269,7 @@ class Solver:
     # region Solve
     def solve(self):
         """
-        Not sure what this do ???
+        Not sure what this does ???
 
         """
         print(f"Solving system with a '{self.ModelType} - {self.PedestrianModel}' model")
@@ -283,7 +285,7 @@ class Solver:
                 percentCompleted = i/self.numSteps * 100
                 print(f"{percentCompleted:.2f}% completed", end='\r')
 
-        # return self.q, self.dq, self.ddq
+        return Results(self.t, self.q, self.dq, self.ddq)
 
     def nonLinearNewmarkBeta(self, t, u0, du0, ddu0):
         """
@@ -388,7 +390,6 @@ class Solver:
         return u, du, ddu, F
 
     def getCurrentSystemMatrices(self, t):
-        # This function returns the M, C, K and F matrices at time t
         """
         Returns the M, C, K and F at time t
 
@@ -482,7 +483,6 @@ class Solver:
 
         return M, C, K
 
-    # def globalShapeFunction(self, x, Ng, dNg, ddNg):
     def globalShapeFunction(self, x):
         """
         This function assembles the DOF force matric based on a time vector and a force vector
@@ -568,7 +568,6 @@ class FeMfSolver(Solver):
 
     # region Solve
     def getCurrentSystemMatrices(self, t):
-        # TODO: Rewrite for FE MF System
         pass
     # endregion
 
@@ -580,8 +579,72 @@ class FeSMDSolver(Solver):
 
     # region Solve
     def getCurrentSystemMatrices(self, t):
-        # TODO: Rewrite for FE SMD System
-        pass
+        """
+        Returns the M, C, K and F at time t
+
+        Parameters
+        ----------
+        t: Any
+            Time
+
+        Returns
+        -------
+        M : Any ???
+            System Mass
+        C : Any ???
+            System Damping
+        K : Any ???
+            System stiffness
+        F : np.ndarray
+            Force ???
+        """
+
+        # Initialize global matrices
+        M = np.zeros((self.nDOF, self.nDOF))
+        C = np.zeros((self.nDOF, self.nDOF))
+        K = np.zeros((self.nDOF, self.nDOF))
+        F = np.zeros(self.nDOF)
+
+        # Put in beam matrices
+        M[:self.nBDOF, :self.nBDOF] = self.Mb.copy()
+        C[:self.nBDOF, :self.nBDOF] = self.Cb.copy()
+        K[:self.nBDOF, :self.nBDOF] = self.Kb.copy()
+
+        # For each pedestrian
+        for i in range(len(self.crowd.pedestrians)):
+            ped = self.crowd.pedestrians[i]
+            x, Ft = ped.calcPedForce(t)  # Pedestrian position and force
+            N, dN, ddN = self.globalShapeFunction(x)
+            Nt = np.array([N]).T  # Transpose of N
+
+            # Calculate adjustments to MCKF
+            # MStar = ped.mass * Nt * N
+            CStar = ped.damping * Nt * N
+            KStar = (ped.damping * ped.velocity * Nt * dN) + (ped.stiff * Nt * N)
+            Fp = Nt * Ft
+
+            # Assemble into global matrices
+            # M += MStar
+            C[:self.nBDOF, :self.nBDOF] += CStar
+            K[:self.nBDOF, :self.nBDOF] += KStar
+
+            pDOF = self.nBDOF + i   # The DOF of this pedestrian
+
+            # Mass matrix - only diagonal terms
+            M[pDOF, pDOF] = ped.mass
+
+            # Damping = Diagonal and coupled terms
+            C[pDOF, pDOF] = ped.damping
+            C[:self.nBDOF, pDOF] = -ped.damping * Nt
+            C[pDOF, :self.nBDOF] = -ped.damping * N
+
+            # Stiffness - Diagonal and coupled terms
+            K = K
+
+            # Force vector
+            F += Fp
+
+        return M, C, K, F
     # endregion
 
 
@@ -593,41 +656,7 @@ class MoMmSolver(Solver):
     # region Solve
     def getCurrentSystemMatrices(self, t):
         # TODO: Rewrite for MO SMD System
-        # This function returns the M, C, K and F matrices at time t
-
-        beta = math.pi/self.beam.length * np.array([i for i in range(self.beam.numElements)], dtype='f')
-        w = beta**2 * math.sqrt(self.beam.EI/self.beam.linearMass)
-
-        # Initialize global matrices
-        M = np.eye(self.beam.numElements)
-        C = np.diag(2*self.beam.modalDampingRatio*w)
-        K = np.diag(w**2)
-        F = np.zeros(self.beam.numElements)
-
-        # Shape function zero matrices
-        Ng0 = np.zeros(self.nBDOF)
-        dNg0 = np.zeros(self.nBDOF)
-        ddNg0 = np.zeros(self.nBDOF)
-        elementLength = self.beam.length / self.beam.numElements
-
-        # For each pedestrian
-        for ped in self.crowd.pedestrians:
-            x, Ft = ped.calcPedForce(t)  # Pedestrian position and force
-            N, dN, ddN = self.globalShapeFunction(x, Ng0, dNg0, ddNg0)
-
-            # Calculate adjustments to MCKF
-            MStar = ped.mass * np.transpose(N) * N
-            CStar = ped.mass * ped.velocity * 2 * np.transpose(N) * dN
-            KStar = ped.mass * ped.velocity ** 2 * np.transpose(N) * ddN
-            Fp = N * Ft
-
-            # Assemble into global matrices
-            M += MStar
-            C += CStar
-            K += KStar
-            F += Fp
-
-        return M, C, K, F
+        pass
     # endregion
 
 
@@ -661,32 +690,6 @@ def transpose(A):
 
 def reshape(A):
     return A.reshape(len(A))
-
-
-def timeRMS(t, x, RMS_Window=1):
-    # This function returns the tspan-rms of the signal
-
-    n = len(x)
-    i = 0
-    while t[i] < RMS_Window:
-        i += 1
-    Npts = i
-    rNpts = math.sqrt(Npts)
-
-    rms = np.zeros((n, 1))
-
-    i = 1
-    while i < Npts:
-        vec = x[0:i]
-        rms[i-1] = np.linalg.norm(vec)/math.sqrt(i)
-        i += 1
-
-    while i < n:
-        vec = x[i-Npts:i]
-        rms[i-1] = np.linalg.norm(vec) / rNpts
-        i += 1
-
-    return rms
 
 
 if __name__ == '__main__':
