@@ -693,4 +693,4 @@ def reshape(A):
 
 
 if __name__ == '__main__':
-    print("Go to run.py to run a simulation, or results to process results.")
+    print("Go to run_old.py to run a simulation, or results to process results.")

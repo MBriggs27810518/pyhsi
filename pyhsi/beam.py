@@ -83,36 +83,34 @@ class Beam:
     # region Properties
     @property
     def elemLength(self) -> float:
+        """
+        Returns the element length
+
+        Returns
+        -------
+        elemLength : float
+            The element length
+        """
         if self._elemLength is None:
             self._elemLength = self.length / self.numElements
 
-        """
-        Returns the element length
-        
-        Returns
-        -------
-        elemLength : float 
-            The element length
-        """
         return self._elemLength
 
     @property
     def I(self) -> float:
-        # I - Second Moment of Area (m^4)
         """
              Return second moment area
 
             Returns
             -------
             I : float
-             The second moment area of element
+             Second Moment of Area (m^4)
         """
         if self._I is None:
             self._I = (self.width * self.height ** 3) / 12
         return self._I
 
     @property
-
     def EI(self):
         """
         Returns
@@ -128,7 +126,6 @@ class Beam:
         return self._EI
 
     @property
-
     def nDOF(self):
         """
         The number of overall DOFs
@@ -145,7 +142,6 @@ class Beam:
         return self._nDOF
 
     @property
-
     def nBDOF(self):
         """
         Returns the number of beam-only DOFs
@@ -162,7 +158,6 @@ class Beam:
         return self._nBDOF
 
     @property
-
     def RDOF(self):
         """
         Returns the restrained DOFs
@@ -178,7 +173,6 @@ class Beam:
         return self._RDOF
 
     @property
-
     def numElements(self):
         """
         Returns number of elements
@@ -188,7 +182,6 @@ class Beam:
         _numElements : int
           Number of elements of beam
         """
-
 
         return self._numElements
 
