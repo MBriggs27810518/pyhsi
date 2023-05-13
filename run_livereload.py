@@ -1,4 +1,3 @@
-
 from livereload import Server, shell
 
 if __name__ == '__main__':
@@ -9,3 +8,4 @@ if __name__ == '__main__':
     server.watch('_static/*', shell('make html'), delay=1)
     server.watch('_templates/*', shell('make html'), delay=1)
     server.serve(root='_build/html')
+
