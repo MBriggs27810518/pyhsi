@@ -10,23 +10,15 @@ from pyhsi.crowd import DeterministicCrowd
 from pyhsi.crowd import RandomCrowd
 from pyhsi.crowd import ExactCrowd
 
-# meanMass,73.85
-# sdMass,15.68
-# meanPace,1.96
-# sdPace,0.209
-# meanStride,0.66
-# sdStride,0.066
-# meanStiffness,28000
-# sdStiffness,2800
-# meanDamping,0.3
-# sdDamping,0.03
-
-# test for crowd
-# test for single pedestrian
-
 class TestPedestrian(unittest.TestCase):
+    """
+    Test class for the Pedestrian module.
+    """
 
     def test_deterministicPedestrian(self):
+        """
+        Test creating a deterministic pedestrian instance and setting its properties.
+        """
         Pedestrian.setPopulationProperties({
             'meanMass': 73.85,
             # 'sdMass': 15.68,
@@ -56,6 +48,9 @@ class TestPedestrian(unittest.TestCase):
         self.assertEqual(p2.iSync, 0)
 
     def test_randomPedestrian(self):
+        """
+        Test creating a random pedestrian instance and setting its properties.
+        """
         Pedestrian.setPopulationProperties({
             'meanMass': 73.85,
             'sdMass': 15.68,
@@ -70,12 +65,15 @@ class TestPedestrian(unittest.TestCase):
         })
 
     def test_invalidLocation(self):
+        """
+        Test creating a pedestrian instance with invalid location parameters.
+        """
         with self.assertRaises(KeyError):
             Pedestrian.randomPedestrian(location=1, synched=1)
         with self.assertRaises(ValueError):
-            Pedestrian.randomPedestrian(location=1, synched=1) # change....
+            Pedestrian.randomPedestrian() # change....
         with self.assertRaises(NameError):
-            Pedestrian.randomPedestrian(location=1, synched=1) # change ... don't forget
+            Pedestrian.randomPedestrian() # change ... don't forget
 
     if __name__ == '__main__':
         unittest.main()
