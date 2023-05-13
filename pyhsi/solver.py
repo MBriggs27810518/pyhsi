@@ -36,7 +36,7 @@ class Solver:
 
         Parameters
         ----------
-        crowd : class ???
+        crowd : class
             The modelled walking pedestrian
         beam : class
             Modelled arbitrary beam structure
@@ -101,6 +101,7 @@ class Solver:
                 maxTimeOff = timeOff
 
         timeEnd = 1.1*maxTimeOff    # Run simulation for a bit after the last ped has left
+        print(f"self.numSteps: {self.numSteps}")
         dT = timeEnd / (self.numSteps - 1)
         dT = min(dT, dTMax)
         t = np.arange(0, timeEnd, dT)  # Rounding error created by differing precision in Python vs MATLAB

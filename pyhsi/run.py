@@ -2,6 +2,12 @@ import pyhsi
 
 
 def main():
+    """
+        Runs the simulation for analyzing pedestrian-induced vibrations on a beam.
+
+        Returns:
+            None
+        """
     # Define Crowd
     numPedestrians = 100
     length = 50

@@ -12,38 +12,38 @@ with open('HISTORY.rst') as history_file:
 
 requirements = ['Click>=7.0', ]
 
-test_requirements = ['pytest>=3', ]
-
-setup(
-    author="Jonathan Dau",
-    author_email='jdau99@gmail.com',
-    python_requires='>=3.6',
-    classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
-        'Natural Language :: English',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-    ],
-    description="Testing cookiecutter to use in future hsi-python toolbox",
-    entry_points={
-        'console_scripts': [
-            'pyhsi=pyhsi.cli:main',
-        ],
-    },
-    install_requires=requirements,
-    license="GNU General Public License v3",
-    long_description=readme + '\n\n' + history,
-    include_package_data=True,
-    keywords='pyhsi',
-    name='pyhsi',
-    packages=find_packages(include=['pyhsi', 'pyhsi.*']),
-    test_suite='tests',
-    tests_require=test_requirements,
-    url='https://github.com/J-Dau/test_python_package',
-    version='0.1.0',
-    zip_safe=False,
-)
+# test_requirements = ['pytest>=3', ]
+#
+# setup(
+#     author="Jonathan Dau",
+#     author_email='jdau99@gmail.com',
+#     python_requires='>=3.6',
+#     classifiers=[
+#         'Development Status :: 2 - Pre-Alpha',
+#         'Intended Audience :: Developers',
+#         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+#         'Natural Language :: English',
+#         'Programming Language :: Python :: 3',
+#         'Programming Language :: Python :: 3.6',
+#         'Programming Language :: Python :: 3.7',
+#         'Programming Language :: Python :: 3.8',
+#     ],
+#     description="Testing cookiecutter to use in future hsi-python toolbox",
+#     entry_points={
+#         'console_scripts': [
+#             'pyhsi=pyhsi.cli:main',
+#         ],
+#     },
+#     install_requires=requirements,
+#     license="GNU General Public License v3",
+#     long_description=readme + '\n\n' + history,
+#     include_package_data=True,
+#     keywords='pyhsi',
+#     name='pyhsi',
+#     packages=find_packages(include=['pyhsi', 'pyhsi.*']),
+#     test_suite='tests',
+#     tests_require=test_requirements,
+#     url='https://github.com/J-Dau/test_python_package',
+#     version='0.1.0',
+#     zip_safe=False,
+# )

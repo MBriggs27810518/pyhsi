@@ -7,7 +7,49 @@ import numpy as np
 
 class Beam:
     """
-    Class definition
+    A class for representing a Beam object
+
+    Attributes
+    ----------
+    _numElements : int
+        Number of beam elements
+    length : int
+        Length of beam
+    width : int
+        Width of the beam
+    height : int
+        Height of the beam
+    E : Any
+        Young's modulus of the beam
+    modalDampingRatio : Any
+        Modal damping ratio of the beam
+    nHigh : Any
+        Higher mode for damping matrix
+    area : Any
+        Cross-section area of the beam
+    linearMass : Any
+        Linear mass of the beam
+    beamFreq : int
+        Beam frequency, given linear mass (Hz)
+
+    Methods
+    -------
+    __init__(self, numElements=10, length=50, width=2, height=0.6, E=200e9, nHigh=3, area=0.3162, linearMass=500)
+        Construct a Beam object with the specified attributes
+    elemLength(self) -> float
+        Returns the element length of the beam
+    I(self) -> float
+        Returns the second moment of area of the beam
+    EI(self)
+        Returns the flexural rigidity of the beam
+    nDOF(self)
+        Returns the number overall DOFs of the beam
+    nBDOF(self)
+        Returns the number of beam-only DOFs of the beam
+    RDOF(self)
+        Returns the restrained DOFs of the beam
+    numElements(self)
+        Returns the number of elements of the beam
     """
     # Class attributes
     # _numElements = 10           # numElements - Number of beam elements !not for modal
@@ -35,7 +77,7 @@ class Beam:
         linearMass=500              # linearMass - Linear mass (kg/m)
     ):
         """
-        Constructs a beam object
+        Constructs a beam object with the specified attributes
 
         Parameters
         ----------
@@ -60,7 +102,7 @@ class Beam:
 
         Returns
         -------
-        None.
+        None
         """
 
         self._numElements = numElements
