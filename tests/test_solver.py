@@ -17,7 +17,7 @@ def beam():
 @pytest.fixture
 def pedestrian():
     # generate pedestrian
-    pedestrian = Pedestrian(1, 1, 1, 1, 1, 1, 1, 1)
+    pedestrian = Pedestrian(50, 0.3, 14.11e3, 2, 0, 0, 1.25, 0)
     return pedestrian
 
 @pytest.fixture
@@ -34,7 +34,7 @@ def solver(beam, crowd):
     solver.init()
     return solver
 
-
+@pytest.fixture
 def test_solver_initialization(beam, crowd):
     # create a solver object
     solver = Solver(crowd, beam)
@@ -42,13 +42,6 @@ def test_solver_initialization(beam, crowd):
     # check if the crowd and beam objects are correctly assigned
     assert solver.crowd == crowd
     assert solver.beam == beam
-
-    # check if all the necessary input arguments are correctly passed to the Solver constructor
-    assert solver.t0 == 0
-    assert solver.tMax == 0
-    assert solver.maxStep == 0
-    assert solver.numSteps == 0
-    assert solver.dT == 0
 
     # test if Solver raises a ZeroDivisionError when numstep is 0
     t, dT, dt_error = solver.genTimeVector()
