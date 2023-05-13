@@ -29,7 +29,7 @@ class TestPedestrian(unittest.TestCase):
             # 'meanStiffness': 28000,
             # 'sdStiffness': 2800,
             'meanDamping': 0.3,
-            # 'sdDamping': 0.03,
+            'sdDamping': 0.03,
         })
 
         # creating the first instance
@@ -71,9 +71,9 @@ class TestPedestrian(unittest.TestCase):
         with self.assertRaises(KeyError):
             Pedestrian.randomPedestrian(location=1, synched=1)
         with self.assertRaises(ValueError):
-            Pedestrian.randomPedestrian() # change....
+            Pedestrian.randomPedestrian(location=0) # change....
         with self.assertRaises(NameError):
-            Pedestrian.randomPedestrian() # change ... don't forget
+            Pedestrian.randomPedestrian(location=2) # change ... don't forget
 
     if __name__ == '__main__':
         unittest.main()
