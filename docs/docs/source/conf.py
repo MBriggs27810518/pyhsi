@@ -9,7 +9,7 @@
 project = 'Human-structure Interaction: An open-source python toolbox'
 copyright = '2023, Faris, Michael'
 author = 'Faris, Michael'
-release = '18/5/2023'
+release = '0.1'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -26,3 +26,6 @@ exclude_patterns = []
 
 html_theme = 'alabaster'
 html_static_path = ['_static']
+
+# EPUB options
+epub_show_urls = 'footnote'
