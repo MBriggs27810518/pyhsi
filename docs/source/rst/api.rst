@@ -3,11 +3,15 @@ API
 
 .. autosummary::
     :toctree: generated
-    :template: custom-module-template.rst
     :recursive:
 
+    pyhsi
     pyhsi.beam
     pyhsi.crowd
     pyhsi.solver
     pyhsi.results
     pyhsi.run
+
+
+
+

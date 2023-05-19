@@ -7,7 +7,7 @@ Welcome to PyHSI's documentation!
 ======================================================================================
 **pyhsi** is a python toolbox which provides *user-friendly* and *extensible* implementation of the **human-structure interaction** simulation, *originally coded in MATLAB*. The toolbox serves as a software tool that allows users to simulate and analyze the interaction between humans and structures, particularly in the vertical direction.
 
-Check out the :doc:`usage` section for further information, including how to
+Check out the :doc:`rst/installation` section for further information, including how to
 :ref:`install <installation>` the project.
 
 .. note::
@@ -15,7 +15,7 @@ Check out the :doc:`usage` section for further information, including how to
    This project is under active development.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents
 
 
@@ -32,7 +32,5 @@ Contents
 .. toctree::
 
    rst/installation
-   rst/tutorials
-   rst/general
    rst/api
-   rst/usage
+

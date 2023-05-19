@@ -19,7 +19,7 @@ from pyhsi import __version__ as ver
 project = 'Human-structure Interaction: An open-source python toolbox'
 copyright = '2023, Faris, Michael'
 author = 'Faris, Michael'
-release = '0.1'
+release = '0.1.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -37,7 +37,24 @@ extensions = [
     "nbsphinx",
 ]
 
+autodoc_member_order = "bysource"
+autosummary_generate = True  # Turn on sphinx.ext.autosummary
+autoclass_content = "both"  # Add __init__ doc (ie. params) to class summaries
+html_show_sourcelink = (
+    False  # Remove 'view source code' from top of page (for html, not python)
+)
+autodoc_inherit_docstrings = True  # If no docstring, inherit from base class
+set_type_checking_flag = True  # Enable 'expensive' imports for sphinx_autodoc_typehints
+nbsphinx_allow_errors = True  # Continue through Jupyter errors
+add_module_names = False  # Remove namespaces from class/method signatures
+# Add any paths that contain templates here, relative to this directory.
+
 templates_path = ['_templates']
+
+# The suffix(es) of source filenames.
+# You can specify multiple suffix as a list of string:
+source_suffix = [".rst", ".md"]
+
 exclude_patterns = []
 
 # -- Options for HTML output -------------------------------------------------
