@@ -1,5 +1,5 @@
 """
-PyHSI - Beam Class definition
+PyHSI - Human Structure Interaction -  Beam Class definition
 """
 import math
 import numpy as np

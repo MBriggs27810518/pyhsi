@@ -5,7 +5,6 @@ API
     :toctree: generated
     :recursive:
 
-    pyhsi
     pyhsi.beam
     pyhsi.crowd
     pyhsi.solver
