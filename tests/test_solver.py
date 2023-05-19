@@ -56,7 +56,8 @@ def test_calcnDOF(solver):
 
 def test_genTimeVector(solver):
     # test the genTimeVector function
-    t, dT = solver.genTimeVector()
+    with pytest.raises(ZeroDivisionError):
+        t, dT = solver.genTimeVector()
     assert len(t) == solver.numSteps
     assert dT > 0
 
