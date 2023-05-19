@@ -10,10 +10,6 @@ Required Dependencies
 
 .. _installation:
 
-you can use the ``pyhsi.beam()`` function:
-
-.. autofunction:: pyhsi.beam
-
 Instructions
 ------------
 The easiest way to install `PyHSI` is to use the python package index: ::

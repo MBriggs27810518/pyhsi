@@ -1,3 +1,6 @@
+"""
+PyHSI - Human Structure Interaction -  Run Module
+"""
 import pyhsi
 
 
