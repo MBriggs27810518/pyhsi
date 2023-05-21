@@ -32,7 +32,7 @@ class Solver:
 
     def __init__(self, crowd, beam):
         """
-        Conducts the HSI analysis given the crowd and beam information
+        Initializes the solver object and conduct the HSI analysis given the crowd and beam information
 
         Parameters
         ----------
@@ -68,12 +68,12 @@ class Solver:
     # region Prepare Solver
     def calcnDOF(self):
         """
-        Calculate number of DOF
+        Calculates the total number of degrees of freedom (DOFs) in the system.
 
         Returns
         -------
-        nBDOF: int ???
-            Number of Beam-only DOFs
+        nBDOF: int
+           The total number of DOFs
         """
         if self.PedestrianModel == "Spring Mass Damper":
             return self.nBDOF + self.crowd.numPedestrians
@@ -183,25 +183,24 @@ class Solver:
         K : np.ndarray
         """
         def imposeRestraint(A, dof):
+            """
+            Impose restraints on the matrix A by setting specific entries to zero and the diagonal entry to one.
+
+            Parameters
+            ----------
+            A : np.ndarray
+                The matrix to impose restraints on.
+            dof : Any
+                The restrained degrees of freedom.
+
+            Return
+            ------
+            A : np.ndarray
+                The modified matrix A
+            """
             A[dof] = 0  # column
             A[:, dof] = 0  # row
             A[dof, dof] = 1  # diagonal
-            """
-            impose the restraints 
-            
-            Parameters
-            ----------
-            A : ???
-                Area
-            dof : Any 
-                Restrained degrees of freedom 
-            
-            Returns
-            -------
-            A :  ???
-                area 
-            """
-
             return A
 
         for i in self.RDOF:
@@ -215,20 +214,21 @@ class Solver:
     @staticmethod
     def modal(M, K):
         """
+        Calculate the mode shape matrix and eigenvalues of a system.
+
         Parameters
         ----------
         M : np.ndarray
-            System Mass
+            The system mass matrix.
         K : np.ndarray
-            System Stiffness
+            The system stiffness matrix.
 
         Return
         ------
-        phi : Any ???
-            Mode shape matrix
-        omega : ???
-            ???? eigen values?
-
+        phi : Any
+            The mode shape matrix.
+        omega : Any
+            The eigenvalues of the system.
         """
         lam, phi = eigh(K, M)
         n, m = K.shape
@@ -239,23 +239,23 @@ class Solver:
     @staticmethod
     def rayleighCoeffs(w, modalDampingRatio, nHigh):
         """
-        Returns the rayleigh coefficients, alpha and beta given the modal damping ratio of the first and nth mode
+        Calculate the Rayleigh coefficients given the modal damping ratio and the higher mode of the damping matrix.
 
         Parameters
         ----------
-        w : Any ???
+        w : Any
             Vector of modal frequencies
         modalDampingRatio : Any
-            Modal damping ratio of beam
+            Modal damping ratio of the beam
         nHigh : Any
-            Higher mode of damping matrix
+            Higher mode of the damping matrix
 
         Returns
         -------
         alpha : float
-            Rayleigh coefficient ???
+            Rayleigh coefficient
         beta  : float
-            Rayleigh coefficient ???
+            Rayleigh coefficient
         """
         wr = [i for i in w if i > 1.01]
         wi = wr[0]
@@ -270,8 +270,10 @@ class Solver:
     # region Solve
     def solve(self):
         """
-        Not sure what this does ???
+        Solve the system using a specific model.
 
+        Returns:
+            Results: The results of the simulation.
         """
         print(f"Solving system with a '{self.ModelType} - {self.PedestrianModel}' model")
         for i in range(1, self.numSteps):
@@ -314,7 +316,7 @@ class Solver:
         ddu : int
             Acceleration
         F : np.ndarray
-            Force ???
+            Force
 
         """
         # TODO: Complete
@@ -392,23 +394,23 @@ class Solver:
 
     def getCurrentSystemMatrices(self, t):
         """
-        Returns the M, C, K and F at time t
+        Calculates the current system matrices.
 
         Parameters
         ----------
-        t: Any
-            Time
+        t : float
+            The current time
 
         Returns
         -------
-        M : Any ???
-            System Mass
-        C : Any ???
-            System Damping
-        K : Any ???
-            System stiffness
-        F : np.ndarray
-            Force ???
+        M : np.ndarray
+            The mass matrix
+        C : np.ndarray
+            The damping matrix.
+        K : ndarray
+            The stiffness matrix.
+        F : ndarray
+            The force vector.
         """
 
         # Initialize global matrices
@@ -439,33 +441,18 @@ class Solver:
 
     def applyConstraints(self):
         """
-        apply constraints before estimating modal properties
+        Applies constraints to the matrices.
 
-        Return
-        ------
-        M : Any ???
-            System mass
-        C : Any ???
-            System mass
-        K : Any ???
-            System mass
+        Returns
+        -------
+        M : np.ndarray
+            The modified mass matrix.
+        C : np.ndarray
+            The modified damping matrix.
+        K : np.ndarray
+            The modified stiffness matrix.
         """
         def imposeRestraint(A, dof):
-            """
-            impose the restraints
-
-            Parameters
-            ----------
-            A : ???
-                Area
-            dof : Any
-                Restrained degrees of freedom
-
-            Returns
-            -------
-            A :  ???
-                area
-            """
             A[dof] = 0          # column
             A[:, dof] = 0       # row
             A[dof, dof] = 1     # diagonal
@@ -486,22 +473,21 @@ class Solver:
 
     def globalShapeFunction(self, x):
         """
-        This function assembles the DOF force matric based on a time vector and a force vector
+        Calculates the global shape function.
 
         Parameter
         ---------
-        x : Any ???
-            the load position
+           x : float
+            The position.
 
-
-        Return
-        ------
-        Ng : np.ndarray
-            Shape function vector [nDOF,1]
-        dNg : np.ndarray
-            1st derivate shape function vector  [nDOF,1]
-        ddNg : np.ndarray
-            2nd derivate Shape function vector  [nDOF,1]
+        Returns
+        -------
+          Ng : np.ndarray
+            The shape function matrix.
+          dNg : np.ndarray
+            The derivative of the shape function matrix.
+          ddNg np.ndarray
+            The second derivative of the shape function matrix.
         """
 
         # Shape function zero matrices
@@ -543,19 +529,54 @@ class Solver:
 
     # region Return Information
     def getResults(self):
+        """
+        Returns the simulation results.
+
+        Returns
+        -------
+            t : float
+                The time vector.
+            q : np.ndarray
+                The displacement vector.
+            dq : np.ndarray
+                The velocity vector.
+            ddq : np.ndarray
+                The acceleration vector.
+        """
+
         return self.t, self.q, self.dq, self.ddq
 
     def getModelType(self):
+        """
+        Returns the model type.
+
+        Returns
+        -------
+            PedestrianModel : str
+                The pedestrian model.
+            ModelType : str
+                The model type.
+        """
         return self.PedestrianModel, self.ModelType
     # endregion
 
     @classmethod
     def setNumSteps(cls, numSteps):
+        """
+        Sets the number of simulation steps.
+
+        Parameters
+        ----------
+            numSteps : int
+                The number of steps.
+        """
         cls.numSteps = numSteps
 
 
 class FeMmSolver(Solver):
-
+    """
+    Finite Element Moving Mass Solver.
+    """
     PedestrianModel = "Moving Mass"
     ModelType = "Finite Element"
 
@@ -563,6 +584,9 @@ class FeMmSolver(Solver):
 
 
 class FeMfSolver(Solver):
+    """
+    Finite Element Moving Force Solver.
+    """
 
     PedestrianModel = "Moving Force"
     ModelType = "Finite Element"
@@ -574,32 +598,15 @@ class FeMfSolver(Solver):
 
 
 class FeSMDSolver(Solver):
+    """
+    Finite Element Spring Mass Damper Solver.
+    """
 
     PedestrianModel = "Spring Mass Damper"
     ModelType = "Finite Element"
 
     # region Solve
     def getCurrentSystemMatrices(self, t):
-        """
-        Returns the M, C, K and F at time t
-
-        Parameters
-        ----------
-        t: Any
-            Time
-
-        Returns
-        -------
-        M : Any ???
-            System Mass
-        C : Any ???
-            System Damping
-        K : Any ???
-            System stiffness
-        F : np.ndarray
-            Force ???
-        """
-
         # Initialize global matrices
         M = np.zeros((self.nDOF, self.nDOF))
         C = np.zeros((self.nDOF, self.nDOF))
@@ -650,6 +657,9 @@ class FeSMDSolver(Solver):
 
 
 class MoMmSolver(Solver):
+    """
+    Modal Analysis Moving Mass Solver.
+    """
 
     PedestrianModel = "Moving Mass"
     ModelType = "Modal Analysis"
@@ -662,7 +672,9 @@ class MoMmSolver(Solver):
 
 
 class MoMfSolver(Solver):
-
+    """
+    Modal Analysis Moving Force Solver.
+    """
     PedestrianModel = "Moving Force"
     ModelType = "Modal Analysis"
 
@@ -674,7 +686,9 @@ class MoMfSolver(Solver):
 
 
 class MoSMDSolver(Solver):
-
+    """
+    Modal Analysis Spring Mass Damper Solver.
+    """
     PedestrianModel = "Spring Mass Damper"
     ModelType = "Modal Analysis"
 
@@ -686,10 +700,36 @@ class MoSMDSolver(Solver):
 
 
 def transpose(A):
+    """
+    Transposes the matrix A.
+
+    Parameters
+    ----------
+        A : np.ndarray
+            The input matrix.
+
+    Returns
+    -------
+        ndarray
+            The transposed matrix.
+    """
     return reshape(np.array([A]).T)
 
 
 def reshape(A):
+    """
+    Reshapes the matrix A.
+
+    Parameters
+    ----------
+        A : np.ndarray
+            The input matrix.
+
+    Returns
+    -------
+        ndarray
+            The reshaped matrix.
+    """
     return A.reshape(len(A))
 
 
