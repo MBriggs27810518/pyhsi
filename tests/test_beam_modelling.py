@@ -1,14 +1,3 @@
-#default values?
-
-
-# testing the output (parameters... elemlength/ I)
-
-
-#FE
-
-# MA - modal anlaysis
-
-
 import sys, os
 sys.path.insert(0, os.path.abspath("../pyhsi"))
 
