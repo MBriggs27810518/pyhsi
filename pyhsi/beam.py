@@ -1,6 +1,7 @@
 """
 PyHSI - Human Structure Interaction -  Beam Class definition
 """
+
 import math
 import numpy as np
 
@@ -9,46 +10,35 @@ class Beam:
     """
     A class for representing a Beam object
 
-    Attributes
-    ----------
-    _numElements : int
-        Number of beam elements
-    length : int
-        Length of beam
-    width : int
-        Width of the beam
-    height : int
-        Height of the beam
-    E : Any
-        Young's modulus of the beam
-    modalDampingRatio : Any
-        Modal damping ratio of the beam
-    nHigh : Any
-        Higher mode for damping matrix
-    area : Any
-        Cross-section area of the beam
-    linearMass : Any
-        Linear mass of the beam
-    beamFreq : int
-        Beam frequency, given linear mass (Hz)
+    :parameter:
 
-    Methods
-    -------
-    __init__(self, numElements=10, length=50, width=2, height=0.6, E=200e9, nHigh=3, area=0.3162, linearMass=500)
+    * _numElements ('int'): Number of beam elements
+    * length ('int'): Length of beam
+    * width ('int'): Width of the beam
+    * height ('int'): Height of the beam
+    * E ('Any'): Young's modulus of the beam
+    * modalDampingRatio ('Any'): Modal damping ratio of the beam
+    * nHigh ('Any'): Higher mode for damping matrix
+    * area ('Any'):  Cross-section area of the beam
+    * linearMass ('Any'): Linear mass of the beam
+    * beamFreq ('int'):  Beam frequency, given linear mass (Hz)
+
+    :Methods:
+    * __init__(self, numElements=10, length=50, width=2, height=0.6, E=200e9, nHigh=3, area=0.3162, linearMass=500)
         Construct a Beam object with the specified attributes
-    elemLength(self) -> float
+    * elemLength(self) -> float
         Returns the element length of the beam
-    I(self) -> float
+    * I(self) -> float
         Returns the second moment of area of the beam
-    EI(self)
+    * EI(self)
         Returns the flexural rigidity of the beam
-    nDOF(self)
+    * nDOF(self)
         Returns the number overall DOFs of the beam
-    nBDOF(self)
+    * nBDOF(self)
         Returns the number of beam-only DOFs of the beam
-    RDOF(self)
+    * RDOF(self)
         Returns the restrained DOFs of the beam
-    numElements(self)
+    * numElements(self)
         Returns the number of elements of the beam
     """
     # Class attributes
@@ -79,30 +69,26 @@ class Beam:
         """
         Constructs a beam object with the specified attributes
 
-        Parameters
-        ----------
-        numElements: int
-            The number of beam element
-        length: int
-            Length of beam
-        width: int
-            Width of beam
-        height: int
-            Height of beam
-        E: Any
-            Young's modulus
-        modalDampingRatio: Any
-            Modal damping ratio of the beam
-        nHigh: Any
-            Higher mode for damping matrix
-        area: Any
-            Cross-section area
-        linearMass: Any
-            Linear Mass
+        :param numElements: The number of beam element
+        :type numElements: int
+        :param length: Length of beam
+        :type length: int
+        :param width: Width of beam
+        :type width: int
+        :param height: Height of beam
+        :type height: int
+        :param E: Young's modulus
+        :type E: Any
+        :param modalDampingRatio: Modal damping ratio of the beam
+        :type modalDampingRatio: Any
+        :param nHigh: Higher mode for damping matrix
+        :type nHigh: Any
+        :param area: Cross-section area
+        :type area: Any
+        :param linearMass: Linear Mass
+        :type linearMass: Any
 
-        Returns
-        -------
-        None
+        :returns: None
         """
 
         self._numElements = numElements
@@ -128,10 +114,8 @@ class Beam:
         """
         Returns the element length
 
-        Returns
-        -------
-        elemLength : float
-            The element length
+        :returns: elemLength - The element length
+        :rtype: float
         """
         if self._elemLength is None:
             self._elemLength = self.length / self.numElements
@@ -141,12 +125,10 @@ class Beam:
     @property
     def I(self) -> float:
         """
-             Return second moment area
+        Returns the second moment of area
 
-            Returns
-            -------
-            I : float
-             Second Moment of Area (m^4)
+        :returns: I - Second Moment of Area (m^4)
+        :rtype: float
         """
         if self._I is None:
             self._I = (self.width * self.height ** 3) / 12
@@ -155,13 +137,11 @@ class Beam:
     @property
     def EI(self):
         """
-        Returns
-        -------
-        EI : float
-         The flexural rigidity
+        Returns the flexural rigidity
 
+        :returns: EI - The flexural rigidity
+        :rtype: float
         """
-
         # EI - Flexural Rigidity
         if self._EI is None:
             self._EI = self.linearMass * ((2 * math.pi * self.beamFreq) * (math.pi / self.length) ** (-2)) ** 2
@@ -170,15 +150,11 @@ class Beam:
     @property
     def nDOF(self):
         """
-        The number of overall DOFs
+        Returns the number of overall DOFs
 
-        Returns
-        -------
-        nDOF : int
-         Number of overall DOFs
-
+        :returns: nDOF - Number of overall DOFs
+        :rtype: int
         """
-
         if self._nDOF is None:
             self._nDOF = 2 * (self.numElements + 1)
         return self._nDOF
@@ -188,13 +164,9 @@ class Beam:
         """
         Returns the number of beam-only DOFs
 
-        Returns
-        -------
-        nBDOF : int
-         Beam only DOFs
-
+        :returns: nBDOF - Beam only DOFs
+        :rtype: int
         """
-
         if self._nBDOF is None:
             self._nBDOF = 2 * (self.numElements + 1)
         return self._nBDOF
@@ -204,12 +176,9 @@ class Beam:
         """
         Returns the restrained DOFs
 
-        Returns
-        -------
-        RDOF : float
-         Restrained degree of freedom
+        :returns: RDOF - Restrained degree of freedom
+        :rtype: float
         """
-
         if self._RDOF is None:
             self._RDOF = [0, self.nDOF - 2]  # Should this be nDOF-1 so that the last column is used not 2nd last?
         return self._RDOF
@@ -217,29 +186,22 @@ class Beam:
     @property
     def numElements(self):
         """
-        Returns number of elements
+        Returns the number of elements
 
-        Return
-        ------
-        _numElements : int
-          Number of elements of beam
+        :returns: numElements - Number of elements of beam
+        :rtype: int
         """
-
         return self._numElements
 
     @numElements.setter
     def numElements(self, numElements):
         """
-        Sets even number of elements
-        Parameters
-        ----------
-        numElements : int
-            Number of elements of beam
+        Sets the number of elements
 
-        Returns
-        -------
-        None
+        :param numElements: Number of elements of beam
+        :type numElements: int
 
+        :returns: None
         """
         if numElements % 2 != 0:
             numElements += 1
@@ -251,13 +213,9 @@ class Beam:
         """
         Returns the elemental mass matrix and elemental stiffness matrix
 
-        Returns
-        -------
-        elementalMassMatrix : np.ndarray
-            Elemental mass matrix
-        elementalStiffnessMatrix : np.ndarray
-            Elemental stiffness matrix
-
+        :returns: elementalMassMatrix - Elemental mass matrix
+                  elementalStiffnessMatrix - Elemental stiffness matrix
+        :rtype: np.ndarray, np.ndarray
         """
         L = self.elemLength
 
@@ -276,7 +234,15 @@ class Beam:
         return elementalMassMatrix, elementalStiffnessMatrix
 
     def onBeam(self, x):
+        """
+       Checks if a location is on the beam
 
+       :param x: The location to check
+       :type x: float
+
+       :returns: True if the location is on the beam, False otherwise
+       :rtype: bool
+       """
         # Checks if a location is on the beam
         if 0 <= x <= self.length:
             return True
@@ -284,6 +250,16 @@ class Beam:
             return False
 
     def locationOnBeam(self, x):
+        """
+        Returns which element a location is on and where on that element it is
+
+        :param x: The location on the beam
+        :type x: float
+
+        :returns: elemNumber - The element number
+                  elemLocation - The location on the element
+        :rtype: int, float
+        """
         # Returns which element x is on and where on that element it is
         elemNumber = int(np.fix(x / self.elemLength) + 1)
         elemLocation = (x - (elemNumber - 1) * self.elemLength) / self.elemLength
@@ -294,6 +270,15 @@ class Beam:
 
     @classmethod
     def fromDict(cls, beamProperties):
+        """
+        Constructs a beam object from a dictionary of beam properties
+
+        :param beamProperties: Dictionary containing beam properties
+        :type beamProperties: dict
+
+        :returns: Beam object
+        :rtype: Beam
+        """
         numElements = beamProperties['numElements']
         length = beamProperties['length']
         width = beamProperties['width']
@@ -306,10 +291,8 @@ class Beam:
 
         return cls(numElements, length, width, height, E, modalDampingRatio, nHigh, area, linearMass)
 
-
 class FeBeam(Beam):
     pass
-
 
 class MoBeam(Beam):
     pass
