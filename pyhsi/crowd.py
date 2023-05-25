@@ -9,7 +9,32 @@ import csv
 
 class Pedestrian:
     """
-    Base Class for creating a Pedestrian
+    Base class for creating a pedestrian.
+
+    :ivar populationProperties: Dictionary containing population properties
+    :ivar meanLognormalModel: Mean of the lognormal distribution model
+    :ivar sdLognormalModel: Standard deviation of the lognormal distribution model
+    :ivar detK: Deterministic stiffness value
+    :ivar detVelocity: Deterministic velocity value
+    :ivar synchedPace: Synchronized pacing frequency
+    :ivar synchedPhase: Synchronized phase angle
+
+    :param mass: Human mass
+    :type mass: float
+    :param damping: Damping effect of pedestrian
+    :type damping: float
+    :param stiff: Stiffness of humans
+    :type stiff: float
+    :param pace: Pacing frequency
+    :type pace: float
+    :param phase: Phase angle
+    :type phase: float
+    :param location: Location of mass
+    :type location: float
+    :param velocity: Velocity of travelling mass
+    :type velocity: float
+    :param iSync: Synchronization flag
+    :type iSync: int
     """
 
     populationProperties = {}
@@ -24,23 +49,24 @@ class Pedestrian:
 
     def __init__(self, mass, damping, stiff, pace, phase, location, velocity, iSync):
         """
-        this function introduce the properties when creating one pedestrian
+        Initializes a Pedestrian object with the specified properties.
 
-        Parameters
-        ----------
-        mass: human mass
-        damping : damping effect of pedesteian
-        stiff : stiffness of humans
-        pace : pacing frequency
-        phase : phase angle
-        location : location of mass
-        velocity : velocity of travelling mass
-        iSync : synchronization
-
-        Returns
-        -------
-        None.
-
+        :param mass: Human mass
+        :type mass: float
+        :param damping: Damping effect of pedestrian
+        :type damping: float
+        :param stiff: Stiffness of humans
+        :type stiff: float
+        :param pace: Pacing frequency
+        :type pace: float
+        :param phase: Phase angle
+        :type phase: float
+        :param location: Location of mass
+        :type location: float
+        :param velocity: Velocity of travelling mass
+        :type velocity: float
+        :param iSync: Synchronization flag
+        :type iSync: int
         """
         self.mass = mass
         self.damping = damping
@@ -54,28 +80,22 @@ class Pedestrian:
     @classmethod
     def setPopulationProperties(cls, populationProperties):
         """
-        class method function is used for future user to be able to access and modify the class state
+        Sets the population properties for all pedestrians.
 
-        Parameters
-        ---------
-
-
-        Returns
-        ------
+        :param populationProperties: Dictionary containing population properties
+        :type populationProperties: dict
         """
         cls.populationProperties = populationProperties
 
     @classmethod
     def setPaceAndPhase(cls, pace, phase):
         """
-        class method function is used for future user to be able to access and modify the class state
+        Sets the synchronized pacing frequency and phase angle.
 
-        Parameters
-        ---------
-
-
-        Returns
-        ------
+        :param pace: Pacing frequency
+        :type pace: float
+        :param phase: Phase angle
+        :type phase: float
         """
         cls.synchedPace = pace
         cls.synchedPhase = phase
@@ -83,26 +103,14 @@ class Pedestrian:
     @classmethod
     def deterministicPedestrian(cls, location, synched=0):
         """
-        class method function is used for future user to be able to access and modify the class state
+        Creates a deterministic pedestrian.
 
-        Parameters
-        ---------
-
-
-        Returns
-        ------
-        pMass
-            Stores mass into dictionary hp
-        pDamp
-            Stores damping into
-        pStiff
-        pPace
-        pPhase
-        pLocation
-        pStiffness
-        pVelocity
-        iSync
-
+        :param location: Location of the pedestrian
+        :type location: float
+        :param synched: Synchronization flag, defaults to 0
+        :type synched: int, optional
+        :return: Deterministic pedestrian object
+        :rtype: Pedestrian
         """
         hp = cls.populationProperties
         pMass = hp['meanMass']
@@ -126,14 +134,14 @@ class Pedestrian:
     @classmethod
     def randomPedestrian(cls, location, synched=0):
         """
-        class method function is used for future user to be able to access and modify the class state
+        Creates a random pedestrian.
 
-        Parameters
-        ---------
-
-
-        Returns
-        ------
+        :param location: Location of the pedestrian
+        :type location: float
+        :param synched: Synchronization flag, defaults to 0
+        :type synched: int, optional
+        :return: Random pedestrian object
+        :rtype: Pedestrian
         """
         hp = cls.populationProperties
         pMass = np.random.lognormal(mean=cls.meanLognormalModel, sigma=cls.sdLognormalModel)
@@ -158,7 +166,14 @@ class Pedestrian:
     @classmethod
     def exactPedestrian(cls, location, synched=0):
         """
-        Temporary, used for testing crowds
+        Temporary method used for testing crowds.
+
+        :param location: Location of the pedestrian
+        :type location: float
+        :param synched: Synchronization flag, defaults to 0
+        :type synched: int, optional
+        :return: Exact pedestrian object
+        :rtype: Pedestrian
         """
         hp = cls.populationProperties
         pMass = hp['meanMass']
@@ -175,18 +190,25 @@ class Pedestrian:
     # region Solver Methods
     def calcTimeOff(self, length):
         """
-        returns the departure time of the pedestrian on the bridge
+        Calculates the departure time of the pedestrian on the bridge.
 
-        Returns
-        -------
-        timeOff
-            Departure time of pedestrian on the bridge
-
+        :param length: Length of the bridge
+        :type length: float
+        :return: Departure time of pedestrian on the bridge
+        :rtype: float
         """
         timeOff = (-self.location+length) / self.velocity
         return timeOff
 
     def calcPedForce(self, t):
+        """
+        Calculates the force exerted by the pedestrian at a given time.
+
+        :param t: Time
+        :type t: float
+        :return: Position of the pedestrian and force exerted
+        :rtype: tuple(float, float)
+        """
         # Question: What are all the commented out parts in matlab ped_force
         g = 9.81
 
@@ -214,7 +236,12 @@ class Pedestrian:
 
 
 class Crowd:
+    """
+    The Crowd class represents a crowd of pedestrians and provides methods to add and manage pedestrians.
 
+    populationProperties:
+    An empty dictionary is initialized to store population properties, which will be introduced in the following lines of code.
+    """
     populationProperties = {
         'meanMass': 73.85,
         'sdMass': 15.68,
@@ -227,9 +254,6 @@ class Crowd:
         'meanDamping': 0.3,
         'sdDamping': 0.03,
     }
-    """
-    an empty dictionary is initialized to store population properties which will be introduced in the following lines of code.  
-    """
 
     def __init__(
         self,
@@ -239,7 +263,12 @@ class Crowd:
         sync=0
     ):
         """
-        initialization takes arguments numPedestrians, length, width and sync. Then set the corresponding attributes
+        Initialize the Crowd object with the specified number of pedestrians, length, width, and synchronization.
+
+        :param numPedestrians: The number of pedestrians in the crowd (default: 100).
+        :param length: The length of the crowd area (default: 50).
+        :param width: The width of the crowd area (default: 1).
+        :param sync: The synchronization level of the crowd as a percentage (default: 0).
         """
 
         Pedestrian.setPopulationProperties(self.populationProperties)
@@ -261,6 +290,9 @@ class Crowd:
         self.determineCrowdSynchronisation()
 
     def determineCrowdSynchronisation(self):
+        """
+        Determine the synchronization of the crowd based on the specified sync level.
+        """
         sync = self.sync/100
         self.iSync = np.random.choice([0, 1], size=self.numPedestrians, p=[1 - sync, sync])
         pace = np.random.normal(loc=self.populationProperties['meanPace'], scale=self.populationProperties['sdPace'])
@@ -268,26 +300,51 @@ class Crowd:
         Pedestrian.setPaceAndPhase(pace, phase)
 
     def addRandomPedestrian(self, location, synched):
+        """
+        Add a random pedestrian to the crowd at the specified location and synchronization.
+
+        :param location: The location of the pedestrian.
+        :param synched: The synchronization of the pedestrian (0 for unsynchronized, 1 for synchronized).
+        """
         self.pedestrians.append(Pedestrian.randomPedestrian(location, synched))
 
     def addDeterministicPedestrian(self, location, synched):
+        """
+        Add a deterministic pedestrian to the crowd at the specified location and synchronization.
+
+        :param location: The location of the pedestrian.
+        :param synched: The synchronization of the pedestrian (0 for unsynchronized, 1 for synchronized).
+        """
         self.pedestrians.append(Pedestrian.deterministicPedestrian(location, synched))
 
     def addExactPedestrian(self, location, synched):
         """
-        Temporary, for testing
+        Add an exact pedestrian to the crowd at the specified location and synchronization.
+
+        Temporary, for testing.
+
+        :param location: The location of the pedestrian.
+        :param synched: The synchronization of the pedestrian (0 for unsynchronized, 1 for synchronized).
         """
         self.pedestrians.append(Pedestrian.exactPedestrian(location, synched))
 
     @classmethod
     def setPopulationProperties(cls, populationProperties):
         """
-        classmethod function is used so users can set their own population properties and store it in the dictionary
+        Set the population properties of the crowd.
+
+        :param populationProperties: A dictionary containing the population properties.
         """
         cls.populationProperties = populationProperties
 
     @classmethod
     def fromDict(cls, crowdOptions):
+        """
+        Create a Crowd object from a dictionary of crowd options.
+
+        :param crowdOptions: A dictionary containing the crowd options.
+        :return: A Crowd object.
+        """
         numPedestrians = crowdOptions['numPedestrians']
         length = crowdOptions['crowdLength']
         width = crowdOptions['crowdWidth']
@@ -297,15 +354,14 @@ class Crowd:
 
 class SinglePedestrian(Pedestrian):
     """
-    Sub Class of Pedestrian
+    The SinglePedestrian class represents a single pedestrian and is a subclass of Pedestrian.
     """
     def __init__(self):
         """
-        Initialize SinglePedestrian object with default parameters
+        Initialize a SinglePedestrian object with default parameters.
 
-        k: float
-        numPedestrian : int
-            Number of pedestrian
+        :param k: The stiffness parameter for the pedestrian (default: 14.11e3).
+        :param numPedestrian: The number of pedestrians (default: 1).
         """
         # TODO: Where should k come from
         k = 14.11e3
@@ -325,36 +381,29 @@ class SinglePedestrian(Pedestrian):
     @classmethod
     def fromDict(cls, crowdOptions):
         """
-        Construct SinglePedestrian object from a dictionary.
+        Construct a SinglePedestrian object from a dictionary.
 
-        Parameters
-        ----------
-        crowdOptions: dict
-
-        Returns
-        -------
-        SinglePedestrian
+        :param crowdOptions: A dictionary containing the crowd options.
+        :return: A SinglePedestrian object.
         """
         return cls()
 
 
 class DeterministicCrowd(Crowd):
     """
-    Deterministic crowd object
+    The DeterministicCrowd class represents a deterministic crowd and is a subclass of Crowd.
     """
 
     arrivalGap = 1      # HSI Paper Section 5.4
 
     def __init__(self, numPedestrians, length, width, sync):
         """
-        Initialize DeterministicCrowd object.
+        Initialize a DeterministicCrowd object.
 
-        Parameters
-        ----------
-        numPedestrians: int
-        length: float
-        width: float
-        sync: bool
+        :param numPedestrians: The number of pedestrians in the crowd.
+        :param length: The length of the crowd area.
+        :param width: The width of the crowd area.
+        :param sync: The synchronization level of the crowd (0 for unsynchronized, 1 for synchronized).
         """
         super().__init__(numPedestrians, length, width, sync)
         self.generateLocations()
@@ -376,25 +425,25 @@ class DeterministicCrowd(Crowd):
     @classmethod
     def setArrivalGap(cls, arrivalGap):
         """
-        Set arrivalGap class variable.
+        Set the arrivalGap class variable.
+
+        :param arrivalGap: The arrival gap between pedestrians.
         """
         cls.arrivalGap = arrivalGap
 
 
 class RandomCrowd(Crowd):
     """
-    Random crowd object
+    The RandomCrowd class represents a random crowd and is a subclass of Crowd.
     """
     def __init__(self, numPedestrians, length, width, sync):
         """
-        Initialize RandomCrowd object.
+        Initialize a RandomCrowd object.
 
-        Parameters
-        ----------
-        numPedestrians: int
-        length: float
-        width: float
-        sync: bool
+        :param numPedestrians: The number of pedestrians in the crowd.
+        :param length: The length of the crowd area.
+        :param width: The width of the crowd area.
+        :param sync: The synchronization level of the crowd (0 for unsynchronized, 1 for synchronized).
         """
         super().__init__(numPedestrians, length, width, sync)
         self.generateLocations()
@@ -418,6 +467,8 @@ class RandomCrowd(Crowd):
 def getPopulationProperties():
     """
     Return population properties as a dictionary.
+
+    :return: A dictionary containing population properties.
     """
     populationProperties = {}
 
@@ -432,6 +483,8 @@ def getPopulationProperties():
 def updatePopulationProperties(populationProperties):
     """
     Update population properties.
+
+    :param populationProperties: A dictionary containing the updated population properties.
     """
     Pedestrian.setPopulationProperties(populationProperties)
     Crowd.setPopulationProperties(populationProperties)
@@ -439,28 +492,20 @@ def updatePopulationProperties(populationProperties):
 
 class ExactCrowd(Crowd):
     """
-    A subclass of Crowd that generates pedestrian locations and populates the crowd using exact pedestrian models.
+    The ExactCrowd class is a subclass of Crowd that generates pedestrian locations and populates the crowd using
+    exact pedestrian models.
     """
+
     arrivalGap = 1      # HSI Paper Section 5.4
 
     def __init__(self, numPedestrians, length, width, sync):
         """
         Initializes an instance of the ExactCrowd class.
 
-        Parameters
-        ----------
-        numPedestrians :int
-            The number of pedestrians in the crowd.
-        length : float
-            The length of the crowd.
-        width : float
-            The width of the crowd.
-        sync : bool
-            Whether the pedestrians are synchronized.
-
-        Returns
-        -------
-            None
+        :param numPedestrians: The number of pedestrians in the crowd.
+        :param length: The length of the crowd.
+        :param width: The width of the crowd.
+        :param sync: Whether the pedestrians are synchronized (0 for unsynchronized, 1 for synchronized).
         """
         super().__init__(numPedestrians, length, width, sync)
         self.generateLocations()
@@ -469,28 +514,12 @@ class ExactCrowd(Crowd):
     def generateLocations(self):
         """
         Generates the pedestrian locations.
-
-        Parameter
-        --------
-            None
-
-        Returns
-        -------
-            None
         """
         self.locations = -self.arrivalGap*np.array(range(self.numPedestrians))
 
     def populateCrowd(self):
         """
         Populates the crowd with exact pedestrian models.
-
-        Parameters
-        ----------
-            None
-
-        Returns
-        -------
-            None
         """
         for i in range(self.numPedestrians):
             self.addExactPedestrian(self.locations[i], self.iSync[i])
@@ -500,14 +529,7 @@ class ExactCrowd(Crowd):
         """
         Sets the arrival gap for the crowd.
 
-        Parameters
-        ----------
-            arrivalGap : float
-                The arrival gap for the crowd.
-
-        Returns
-        -------
-            None
+        :param arrivalGap: The arrival gap for the crowd.
         """
         cls.arrivalGap = arrivalGap
 
